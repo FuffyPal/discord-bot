@@ -11,6 +11,7 @@ from services.webhook import notifier
 def get_current_stats():
     stats = {}
     if not os.path.exists(DB_PATH):
+        print("❌ DB yok!")
         return stats
 
     conn = sqlite3.connect(str(DB_PATH))
