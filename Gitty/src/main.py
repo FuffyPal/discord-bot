@@ -224,7 +224,7 @@ async def run_sync_loop():
 
             # 5. Bekleme
             print("😴 1000 saniye bekleniyor... (16.6 dakika)")
-            await asyncio.sleep(1000)
+            await asyncio.sleep(10)
 
         except KeyboardInterrupt:
             print("\n🛑 Kullanıcı tarafından durduruldu.")
