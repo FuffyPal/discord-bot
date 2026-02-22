@@ -201,3 +201,13 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+def sync_gitlab_data():
+    """Main.py'nin thread içinde güvenle çağırabilmesi için"""
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        loop.run_until_complete(main())
+    finally:
+        loop.close()

@@ -1,48 +1,52 @@
 import asyncio
 import os
+from pathlib import Path
 
 import aiohttp
-from discord import Embed, Webhook
 from dotenv import load_dotenv
 
-load_dotenv()
+# Mevcut yol yapılandırması aynı kalacak...
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 class DiscordNotifier:
     def __init__(self):
-        self.urls = {
+        self.webhooks = {
             "stats": os.getenv("WEBHOOK_STATS", "").strip(),
             "updates": os.getenv("WEBHOOK_UPDATES", "").strip(),
             "pipelines": os.getenv("WEBHOOK_PIPELINES", "").strip(),
         }
-        self._lock = asyncio.Lock()
 
     async def send_embed(self, category, title, description, color=0x3498DB):
-        url = self.urls.get(category)
-        if not url or not url.startswith("https://"):
+        url = self.webhooks.get(category)
+        if not url or not url.startswith("https"):
             return
 
-        async with self._lock:
-            async with aiohttp.ClientSession() as session:
-                attempts = 0
-                while attempts < 3:
-                    try:
-                        webhook = Webhook.from_url(url, session=session)
-                        embed = Embed(title=title, description=description, color=color)
-                        embed.set_footer(text="Gitty Bot - Database Sync")
+        # Discord Webhook JSON formatı
+        payload = {
+            "embeds": [
+                {
+                    "title": title,
+                    "description": description,
+                    "color": color,
+                    "footer": {"text": "Gitty Bot - Database Sync"},
+                }
+            ]
+        }
 
-                        await webhook.send(embed=embed)
-
-                        print(f"⏳ Message sent ({category}). Waiting 2s for safety...")
-                        await asyncio.sleep(2)
+        try:
+            headers = {"Content-Type": "application/json"}
+            async with aiohttp.ClientSession(headers=headers) as session:
+                async with session.post(url, json=payload) as resp:
+                    if resp.status in [200, 204]:
                         return True
-
-                    except Exception as e:
-                        attempts += 1
-                        print(f"⚠️ Discord Error (Attempt {attempts}): {e}")
-                        await asyncio.sleep(5 * attempts)
-
-                return False
+                    else:
+                        print(
+                            f"Webhook Error: Status {resp.status} - {await resp.text()}"
+                        )
+        except Exception as e:
+            print(f"Webhook Connection Error: {e}")
 
 
 notifier = DiscordNotifier()
