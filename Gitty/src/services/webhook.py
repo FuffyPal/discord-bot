@@ -6,7 +6,7 @@ import aiohttp
 from dotenv import load_dotenv
 
 # Mevcut yol yapılandırması aynı kalacak...
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
@@ -50,3 +50,6 @@ class DiscordNotifier:
 
 
 notifier = DiscordNotifier()
+
+
+print("WEBHOOK_STATS =", repr(notifier.webhooks.get("stats")))
