@@ -1,94 +1,63 @@
 import asyncio
 import os
-import sqlite3
+import sys
+import time
 
-from services.db_create import DB_PATH, create_database
-from services.github_sync import sync_github_data
-from services.gitlab_sync import sync_gitlab_data
+# Mimari gereği path düzenlemesi
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+
+from services.db_create import create_database
+from services.github_sync import main as github_main
+from services.gitlab_sync import main as gitlab_main
 from services.webhook import notifier
 
-
-def get_current_stats():
-    stats = {}
-    if not os.path.exists(DB_PATH):
-        return stats
-
-    conn = sqlite3.connect(str(DB_PATH))
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    try:
-        cursor.execute(
-            "SELECT platform, repo_name, star_count, fork_count FROM Repositories"
-        )
-        for row in cursor.fetchall():
-            key = f"{row['platform']}_{row['repo_name']}"
-            stats[key] = {
-                "stars": int(row["star_count"]),
-                "forks": int(row["fork_count"]),
-            }
-    except sqlite3.OperationalError:
-        pass
-    finally:
-        conn.close()
-    return stats
+# Test amaçlı 10 saniyeye ayarlandı
+SYNC_INTERVAL = 10
 
 
-async def run_sync_loop():
-    print("🚀 Gitty Active! Parallel check starting every 10000 seconds...")
+async def run_forever():
+    print("--- Gitty Continuous Sync Engine Started (Fast Mode) ---")
 
-    while True:
-        old_stats = get_current_stats()
-
-        print("🔄 Updating data asynchronously...")
-        await asyncio.gather(
-            asyncio.to_thread(sync_github_data), asyncio.to_thread(sync_gitlab_data)
-        )
-
-        new_stats = get_current_stats()
-
-        for repo_key, data in new_stats.items():
-            platform, repo_name = repo_key.split("_", 1)
-
-            if repo_key in old_stats:
-                old = old_stats[repo_key]
-                star_diff = data["stars"] - old["stars"]
-                fork_diff = data["forks"] - old["forks"]
-
-                if star_diff > 0 or fork_diff > 0:
-                    msg = f"**{repo_name}** ({platform.upper()})\n"
-                    if star_diff > 0:
-                        msg += f"🌟 Yıldız arttı: {old['stars']} ➡️ {data['stars']}\n"
-                    if fork_diff > 0:
-                        msg += f"🍴 Fork arttı: {old['forks']} ➡️ {data['forks']}"
-
-                    await notifier.send_embed(
-                        category="stats",
-                        title="📈 Repo Güncellemesi",
-                        description=msg,
-                        color=0x3498DB,
-                    )
-                    print(f"✅ Notification sent for {repo_name}.")
-            else:
-                await notifier.send_embed(
-                    category="stats",
-                    title="🆕 Yeni Repo Takibi",
-                    description=f"**{repo_name}** ({platform.upper()}) veritabanına eklendi.",
-                    color=0x2ECC71,
-                )
-
-        print("😴 Waiting for 1000 seconds...")
-        await asyncio.sleep(1000)
-
-
-async def main():
-    print("🛠️  STEP 1: Preparing database...")
+    # Veritabanı kontrolü başlangıçta bir kez yapılır
     create_database()
 
-    await run_sync_loop()
+    while True:
+        start_time = time.time()
+        print(f"\n[Cycle Start] {time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+        try:
+            # Platform senkronizasyonlarını paralel başlatıyoruz
+            # return_exceptions=True: Bir platform hata alsa da diğeri devam eder
+            results = await asyncio.gather(
+                github_main(), gitlab_main(), return_exceptions=True
+            )
+
+            # Sonuçları kontrol et ve hataları bildir
+            for i, res in enumerate(results):
+                if isinstance(res, Exception):
+                    platform = "GitHub" if i == 0 else "GitLab"
+                    print(f"Critical Error in {platform}: {res}")
+                    # Discord üzerinden hata bildirimi gönderilir
+                    await notifier.send_embed(
+                        "updates",
+                        f"{platform} Sync Error",
+                        f"Loop failed for {platform}: {str(res)}",
+                        color=0xE74C3C,
+                    )
+
+        except Exception as e:
+            print(f"General Loop Error: {e}")
+
+        # Süre hesaplama: İşlem süresini belirlenen aralıktan çıkarır
+        elapsed = time.time() - start_time
+        sleep_time = max(0, SYNC_INTERVAL - elapsed)
+
+        print(f"[Cycle Finished] Elapsed: {elapsed:.2f}s. Waiting {sleep_time:.2f}s...")
+        await asyncio.sleep(sleep_time)
 
 
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        asyncio.run(run_forever())
     except KeyboardInterrupt:
-        print("\n🛑 System shut down by user.")
+        print("\n[Service Stopped] Terminated by user.")
