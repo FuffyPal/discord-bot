@@ -251,7 +251,7 @@ async def main():
                 description="Repo takibi başladı! Tüm değişiklikler bildirilecek.\n⏱️ Rate limit koruması: 1 saniye",
                 color=0x9B59B6,  # Mor
             ),
-            delay=1.0,
+            delay=2.0,
         )
         print("✅ Test bildirimi gönderildi.")
     except Exception as e:
