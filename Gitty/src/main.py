@@ -1,11 +1,16 @@
 import asyncio
 import os
 import sqlite3
+from pathlib import Path
 
+from dotenv import load_dotenv
 from services.db_create import DB_PATH, create_database
 from services.github_sync import sync_github_data
 from services.gitlab_sync import sync_gitlab_data
 from services.webhook import notifier
+
+BASE_DIR = Path(__file__).resolve().parent
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 
 def get_current_stats():
