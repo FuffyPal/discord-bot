@@ -9,7 +9,6 @@ from services.webhook import notifier
 
 
 def get_current_stats():
-    """Veritabanındaki mevcut star ve fork durumunu sözlük olarak döner."""
     stats = {}
     if not os.path.exists(DB_PATH):
         return stats
@@ -35,7 +34,7 @@ def get_current_stats():
 
 
 async def run_sync_loop():
-    print("🚀 Gitty Active! Parallel check starting every 10 seconds...")
+    print("🚀 Gitty Active! Parallel check starting every 10000 seconds...")
 
     while True:
         old_stats = get_current_stats()
@@ -77,8 +76,8 @@ async def run_sync_loop():
                     color=0x2ECC71,
                 )
 
-        print("😴 Waiting for 10 seconds...")
-        await asyncio.sleep(10)
+        print("😴 Waiting for 1000 seconds...")
+        await asyncio.sleep(10000)
 
 
 async def main():
