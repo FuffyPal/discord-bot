@@ -199,15 +199,18 @@ async def main():
     print("Operation Successful: GitLab Data Synchronized.")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
-
-
 def sync_gitlab_data():
-    """Main.py'nin thread içinde güvenle çağırabilmesi için"""
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    """Main.py tarafından çağrılan güvenli giriş noktası"""
     try:
+        # Eğer halihazırda çalışan bir loop varsa onu al, yoksa yeni oluştur
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
         loop.run_until_complete(main())
-    finally:
         loop.close()
+    except Exception as e:
+        print(f"Sync Error: {e}")
+
+
+if __name__ == "__main__":
+    # Doğrudan python gitlab_sync.py denildiğinde çalışır
+    sync_gitlab_data()

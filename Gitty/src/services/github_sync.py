@@ -142,27 +142,37 @@ async def main():
         print("Error: Token or DB not found.")
         return
 
-    g = Github(GITHUB_TOKEN)
+    g = Github(GITHUB_TOKEN, timeout=15, retry=None)
 
-    print("Stage 1: Synchronizing repositories...")
-    user_repos = [
-        (r.full_name, r.stargazers_count, r.forks_count)
-        for r in g.get_user().get_repos()
-    ]
-    await run_parallel(process_single_repo, user_repos)
+    try:
+        print("Stage 1: Synchronizing GitHub repositories...")
+        # get_user().get_repos() çağrısını try-except içine alıyoruz
+        user_repos = [
+            (r.full_name, r.stargazers_count, r.forks_count)
+            for r in g.get_user().get_repos()
+        ]
+        await run_parallel(process_single_repo, user_repos)
 
-    conn = get_db_connection()
-    db_repos = conn.execute("SELECT id, repo_name FROM Repositories").fetchall()
-    conn.close()
+        conn = get_db_connection()
+        # Sadece GitHub repolarını güncellemek için WHERE platform='GitHub' ekledik
+        db_repos = conn.execute(
+            "SELECT id, repo_name FROM Repositories WHERE platform='GitHub'"
+        ).fetchall()
+        conn.close()
 
-    print("Stage 2: Fetching issue data in parallel...")
-    await run_parallel(process_single_issue, db_repos, g)
+        print("Stage 2: Fetching issue data...")
+        await run_parallel(process_single_issue, db_repos, g)
 
-    print("Stage 3: Fetching commit data in parallel...")
-    await run_parallel(process_single_commit, db_repos, g)
+        print("Stage 3: Fetching commit data...")
+        await run_parallel(process_single_commit, db_repos, g)
 
-    print("Stage 4: Fetching pull request data in parallel...")
-    await run_parallel(process_single_pr, db_repos, g)
+        print("Stage 4: Fetching pull request data...")
+        await run_parallel(process_single_pr, db_repos, g)
+
+    except GithubException as e:
+        print(f"❌ GitHub API Error (Rate Limit or Auth): {e}")
+    except Exception as e:
+        print(f"❌ General GitHub Sync Error: {e}")
 
     print("Operation Successful: Repositories, Issues, and Commits synchronized.")
 
