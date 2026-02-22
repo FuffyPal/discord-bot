@@ -83,7 +83,7 @@ async def run_sync_loop():
                 )
 
         print("😴 Waiting for 1000 seconds...")
-        await asyncio.sleep(10)
+        await asyncio.sleep(1000)
 
 
 async def main():
