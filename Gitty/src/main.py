@@ -248,7 +248,7 @@ async def main():
             notifier.send_embed(
                 category="stats",
                 title="🚀 Gitty Bot Aktif",
-                description="Repo takibi başladı! Tüm değişiklikler bildirilecek.\n⏱️ Rate limit koruması: 1 saniye",
+                description="Repo takibi başladı! Tüm değişiklikler bildirilecek.\n⏱️ Rate limit koruması: 2 saniye",
                 color=0x9B59B6,  # Mor
             ),
             delay=2.0,
