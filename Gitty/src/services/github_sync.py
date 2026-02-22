@@ -167,15 +167,15 @@ async def main():
     print("Operation Successful: Repositories, Issues, and Commits synchronized.")
 
 
-if __name__ == "__main__":
-    asyncio.run(main())
-
-
 def sync_github_data():
-    """Main.py'nin thread içinde güvenle çağırabilmesi için"""
+    """Main.py'nin thread içinde güvenle çağırabilmesi için giriş noktası"""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     try:
         loop.run_until_complete(main())
     finally:
         loop.close()
+
+
+if __name__ == "__main__":
+    sync_github_data()
