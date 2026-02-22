@@ -19,6 +19,7 @@ class DiscordNotifier:
         }
 
     async def send_embed(self, category, title, description, color=0x3498DB):
+        print(f"[DEBUG] Sending to {category}: {url}")
         url = self.webhooks.get(category)
         if not url or not url.startswith("https"):
             return
