@@ -114,11 +114,19 @@ def compare_stats(old, new):
     return changes
 
 
+async def send_with_delay(notifier_func, delay=1.0):
+    """Webhook mesajını gönder ve belirtilen süre bekle (rate limit koruması)"""
+    result = await notifier_func
+    await asyncio.sleep(delay)
+    return result
+
+
 async def run_sync_loop():
     print("🚀 Gitty Active! Parallel check starting every 1000 seconds...")
     print(
         "📊 Tüm repo istatistikleri (yıldız, fork, commit, issue, PR) takip ediliyor..."
     )
+    print("⏱️  Rate limit koruması: Her mesajdan sonra 1 saniye beklenecek")
 
     # İlk çalıştırmada mevcut verileri göster
     initial_stats = get_current_stats()
@@ -167,11 +175,14 @@ async def run_sync_loop():
                     if data["open_prs"] > 0 or data["closed_prs"] > 0:
                         msg += f"\n🔀 {data['open_prs']} açık / 🔀 {data['closed_prs']} kapalı PR"
 
-                    await notifier.send_embed(
-                        category="stats",
-                        title="🆕 Yeni Repo Takibe Alındı",
-                        description=msg,
-                        color=0x2ECC71,  # Yeşil
+                    await send_with_delay(
+                        notifier.send_embed(
+                            category="stats",
+                            title="🆕 Yeni Repo Takibe Alındı",
+                            description=msg,
+                            color=0x2ECC71,  # Yeşil
+                        ),
+                        delay=1.0,  # 1 saniye bekle
                     )
                     notification_count += 1
                     print(f"  📨 Yeni repo bildirimi: {repo_name}")
@@ -190,11 +201,14 @@ async def run_sync_loop():
                             changes
                         )
 
-                        await notifier.send_embed(
-                            category="stats",
-                            title="📊 Repo Güncellemesi",
-                            description=msg,
-                            color=0x3498DB,  # Mavi
+                        await send_with_delay(
+                            notifier.send_embed(
+                                category="stats",
+                                title="📊 Repo Güncellemesi",
+                                description=msg,
+                                color=0x3498DB,  # Mavi
+                            ),
+                            delay=1.0,  # 1 saniye bekle
                         )
                         notification_count += 1
                         print(
@@ -204,7 +218,9 @@ async def run_sync_loop():
             if notification_count == 0:
                 print("  ℹ️ Değişiklik yok, bildirim gönderilmedi.")
             else:
-                print(f"  ✅ {notification_count} bildirim gönderildi.")
+                print(
+                    f"  ✅ {notification_count} bildirim gönderildi. (Her biri arasında 1 saniye beklendi)"
+                )
 
             # 5. Bekleme
             print("😴 1000 saniye bekleniyor... (16.6 dakika)")
@@ -228,11 +244,14 @@ async def main():
 
     # Webhook test mesajı (isteğe bağlı)
     try:
-        await notifier.send_embed(
-            category="stats",
-            title="🚀 Gitty Bot Aktif",
-            description="Repo takibi başladı! Tüm değişiklikler bildirilecek.",
-            color=0x9B59B6,  # Mor
+        await send_with_delay(
+            notifier.send_embed(
+                category="stats",
+                title="🚀 Gitty Bot Aktif",
+                description="Repo takibi başladı! Tüm değişiklikler bildirilecek.\n⏱️ Rate limit koruması: 1 saniye",
+                color=0x9B59B6,  # Mor
+            ),
+            delay=1.0,
         )
         print("✅ Test bildirimi gönderildi.")
     except Exception as e:
