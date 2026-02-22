@@ -40,9 +40,15 @@ async def run_sync_loop():
         old_stats = get_current_stats()
 
         print("🔄 Updating data asynchronously...")
-        await asyncio.gather(
-            asyncio.to_thread(sync_github_data), asyncio.to_thread(sync_gitlab_data)
-        )
+        try:
+            await asyncio.to_thread(sync_github_data)
+        except Exception as e:
+            print(f"❌ GitHub Sync failed/timed out: {e}")
+
+        try:
+            await asyncio.to_thread(sync_gitlab_data)
+        except Exception as e:
+            print(f"❌ GitLab Sync failed: {e}")
 
         new_stats = get_current_stats()
 
