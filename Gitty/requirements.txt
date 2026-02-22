@@ -3,3 +3,4 @@ python-dotenv==1.2.1
 PyGithub==2.8.1
 python-gitlab==8.0.0
 aiohttp==3.13.3
+requests
