@@ -23,12 +23,21 @@ async def hello(ctx, name: str = None, nachricht: str = None):
     else:
         await ctx.respond(f"Hello {name}, {nachricht}")
 
+@bot.slash_command()
+async def say(ctx, nachricht: str = None, mention_author: bool = True):
+    nachricht = nachricht or ""
+    if mention_author:
+        await ctx.respond(f"{ctx.author.mention} says: {nachricht}")
+    else:
+        await ctx.respond(f"{ctx.author.name} says: {nachricht}")
+
+@bot.slash_command()
+async def invate(ctx):
+    await ctx.respond("Invate Mee yeyy:\nhttps://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot")
+        
 @bot.user_command(name="Say Hello")
 async def hi(ctx, user):
     await ctx.respond(f"{ctx.author.mention} says hello to {user.name}!")
 
-@bot.message_command(nachricht="Bla Bla ...")
-async def hi(ctx, nachricht):
-    await ctx.respond(f"{ctx.message.content} says bla bla to {nachricht}!")
 
 bot.run(TOKEN)
