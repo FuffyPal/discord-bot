@@ -50,7 +50,10 @@ async def on_ready():
     print(f"{bot.user} successfully logged in!")
 
 
-@bot.slash_command()
+@bot.slash_command(
+    name="hello",
+    description="Says hello to the user."
+)
 async def hello(
     ctx, 
     name: str = None, 
@@ -63,7 +66,11 @@ async def hello(
     else:
         await ctx.respond(f"Hello {name}, {nachricht}")
 
-@bot.slash_command()
+@bot.slash_command(
+    name="say",
+    description="Repeats the message sent by the user."
+)
+
 async def say(
     ctx, 
     nachricht: str = None, 
@@ -76,7 +83,11 @@ async def say(
     else:
         await ctx.respond(f"{ctx.author.name} says: {nachricht}")
 
-@bot.slash_command()
+@bot.slash_command(
+    name="say_embed",
+    description="Repeats the message inside an embed."
+)
+
 async def say_embed(
     ctx, 
     nachricht: str = None
@@ -148,10 +159,12 @@ async def stop(
     name="ping", 
     description="Measures latency between the server and a given IP."
     )
+
 async def ping(
     ctx,
     ip: str = None
     ):
+    
     import subprocess
     import sys
     ip = ip or "1.1.1.1"
