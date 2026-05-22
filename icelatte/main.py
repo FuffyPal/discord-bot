@@ -19,18 +19,28 @@ logger.addHandler(handler)
 if debug == 1:
     logger.setLevel(logging.DEBUG)
     logger.debug("debug mode DEBUG!")
+    print("DEBUG is set to 1 (DEBUG mode)")
+
 elif debug == 2:
     logger.setLevel(logging.ERROR)
     logger.error("debug mode ERROR!")
+    print("DEBUG is set to 2 (ERROR mode)")
+
 elif debug == 3:
     logger.setLevel(logging.INFO)
     logger.info("debug mode INFO!")
+    print("DEBUG is set to 3 (INFO mode)")
+
 elif debug == 4:
     logger.setLevel(logging.WARNING)
     logger.warning("debug mode WARNING!")
+    print("DEBUG is set to 4 (WARNING mode)")
+
 elif debug == 5:
     logger.setLevel(logging.CRITICAL)
     logger.critical("debug mode CRITICAL!")
+    print("DEBUG is set to 5 (CRITICAL mode)")
+
 else:
     logger.setLevel(logging.NOTSET)
     print("DEBUG is not set!")
