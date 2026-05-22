@@ -144,6 +144,28 @@ async def stop(
             color=0x25323d
         )
         await ctx.respond(embed=embed)
+@bot.slash_command(
+    name="ping", 
+    description="Measures latency between the server and a given IP."
+    )
+async def ping(
+    ctx,
+    ip: str = None
+    ):
+    import subprocess
+    import sys
+    ip = ip or "1.1.1.1"
+    if sys.platform == "win32":
+        command = ["ping", "-n", "3", "-w", "3000", ip]
+    else:
+        command = ["ping", "-c", "3", "-w", "3", ip]
+    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    embed = discord.Embed(
+        title="Ping",
+        description=result.stdout.decode("utf-8"),
+        color=0x1a3d65
+    )
+    await ctx.respond(embed=embed)
 
 @bot.user_command(
     name="Say Hello"
