@@ -3,17 +3,37 @@ load_dotenv()
 
 import discord
 import os
+
 import logging
 
+token = os.getenv("TOKEN")
+owner=int(os.getenv("OWNER"))
+debug=int(os.getenv("DEBUG"))
+bot = discord.Bot()
+
 logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
 handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
-TOKEN = os.getenv("TOKEN")
-owner=int(os.getenv("OWNER"))
-bot = discord.Bot()
+if debug == 1:
+    logger.setLevel(logging.DEBUG)
+    logger.debug("debug mode DEBUG!")
+elif debug == 2:
+    logger.setLevel(logging.ERROR)
+    logger.error("debug mode ERROR!")
+elif debug == 3:
+    logger.setLevel(logging.INFO)
+    logger.info("debug mode INFO!")
+elif debug == 4:
+    logger.setLevel(logging.WARNING)
+    logger.warning("debug mode WARNING!")
+elif debug == 5:
+    logger.setLevel(logging.CRITICAL)
+    logger.critical("debug mode CRITICAL!")
+else:
+    logger.setLevel(logging.NOTSET)
+    print("DEBUG is not set!")
 
 @bot.event
 async def on_ready():
@@ -59,13 +79,21 @@ async def say_embed(
         color=0x74456e
     ))
 
-@bot.slash_command()
+@bot.slash_command(
+    name="invite", 
+    description="Invate the bot to your server. and get a invite for my server"
+    )
 async def invate(
     ctx
     ):
 
-    await ctx.respond("Invate Mee yeyy:\nhttps://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot")
-        
+    embed = discord.Embed(
+        title="Invite Mee yeyy",
+        description="[Invite Mee!](https://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot)\n[My server!](https://discord.gg/qsQxHk2V8c)",
+        color=0x74456e
+    )
+    await ctx.respond(embed=embed)
+
 @bot.slash_command(
     name="testembed", 
     description="test embed."
@@ -118,4 +146,4 @@ async def hi(
 
     await ctx.respond(f"{ctx.author.mention} says hello to {user.name}!")
     
-bot.run(TOKEN)
+bot.run(token)
