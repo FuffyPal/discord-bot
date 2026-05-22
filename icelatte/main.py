@@ -12,8 +12,13 @@ handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(me
 logger.addHandler(handler)
 
 TOKEN = os.getenv("TOKEN")
-
+owner=int(os.getenv("OWNER"))
 bot = discord.Bot()
+
+@bot.event
+async def on_ready():
+    print(f"{bot.user} successfully logged in!")
+
 
 @bot.slash_command()
 async def hello(
@@ -76,11 +81,41 @@ async def testembed(
     )
     await ctx.respond(embed=embed)
 
+@bot.slash_command(
+    name="stop", 
+    description="Stops the bot."
+    )
+
+async def stop(
+    ctx
+    ):
+
+    user_id = ctx.author.id
+    if user_id == owner:
+        embed = discord.Embed(
+            title="Stop",
+            description="Bot stopped.",
+            color=0x25323d
+        )
+        await ctx.respond(embed=embed)
+        exit()
+    else:
+        embed = discord.Embed(
+            title="Access denied",
+            description="You're not allowed to use this command!",
+            color=0x25323d
+        )
+        await ctx.respond(embed=embed)
+
 @bot.user_command(
     name="Say Hello"
     )
 
-async def hi(ctx, user):
+async def hi(
+    ctx, 
+    user
+    ):
+
     await ctx.respond(f"{ctx.author.mention} says hello to {user.name}!")
     
 bot.run(TOKEN)
