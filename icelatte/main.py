@@ -200,9 +200,9 @@ async def palc(
             description=result,
             color=0x1a3d65
         )
+        await ctx.respond(embed=embed)
     else:
         await ctx.respond(result)
-    await ctx.respond(embed=embed)
 
 
 @bot.user_command(
