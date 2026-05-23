@@ -167,18 +167,13 @@ async def ping(
     ):
     await ctx.defer()
     
-    import subprocess
-    import sys
     ip = ip or "1.1.1.1"
     count = count or 3
-    if sys.platform == "win32":
-        command = ["ping", "-n", str(count), ip]
-    else:
-        command = ["ping", "-c", str(count), ip]
-    result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    from src.ping import ping
+    result = ping(ip, count)
     embed = discord.Embed(
         title="Ping",
-        description=result.stdout.decode("utf-8"),
+        description=result,
         color=0x1a3d65
     )
     await ctx.respond(embed=embed)
