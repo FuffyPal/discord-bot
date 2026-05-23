@@ -178,6 +178,33 @@ async def ping(
     )
     await ctx.respond(embed=embed)
 
+@bot.slash_command(
+    name="palc", 
+    description="Palisch Language Converter :3"
+    )
+
+async def palc(
+    ctx,
+    text: str = None,
+    embed: bool = True
+    ):
+    await ctx.defer()
+    
+    text = text or ""
+    from src.palc import convert_text
+    result = convert_text(text)
+
+    if embed == True:
+        embed = discord.Embed(
+            title="Pal Cutiee Lang :3",
+            description=result,
+            color=0x1a3d65
+        )
+    else:
+        await ctx.respond(result)
+    await ctx.respond(embed=embed)
+
+
 @bot.user_command(
     name="Say Hello"
     )
