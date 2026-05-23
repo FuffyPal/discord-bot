@@ -20,6 +20,8 @@ logger.addHandler(handler)
 purple=0x74456e
 dark_blue=0x1a3d65
 grey=0x25323d
+purple_2=0x9c18a3
+pink=0xc586c0
 
 if debug == 1:
     logger.setLevel(logging.DEBUG)
@@ -131,7 +133,7 @@ async def testembed(
     embed = discord.Embed(
         title="Test Embed",
         description="Das ist ein Test Embed.",
-        color=purple
+        color=0xc586c0
     )
     await ctx.respond(embed=embed)
 
