@@ -162,16 +162,19 @@ async def stop(
 
 async def ping(
     ctx,
-    ip: str = None
+    ip: str = None,
+    count: int = None
     ):
+    await ctx.defer()
     
     import subprocess
     import sys
     ip = ip or "1.1.1.1"
+    count = count or 3
     if sys.platform == "win32":
-        command = ["ping", "-n", "3", "-w", "3000", ip]
+        command = ["ping", "-n", str(count), ip]
     else:
-        command = ["ping", "-c", "3", "-w", "3", ip]
+        command = ["ping", "-c", str(count), ip]
     result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     embed = discord.Embed(
         title="Ping",
