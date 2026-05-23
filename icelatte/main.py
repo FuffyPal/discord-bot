@@ -180,7 +180,7 @@ async def ping(
 
 @bot.slash_command(
     name="palc", 
-    description="Palisch Language Converter :3"
+    description="Palisch Language Converter :3 , Palyischch Lyancuace Convewtew :3"
     )
 
 async def palc(
@@ -196,7 +196,7 @@ async def palc(
 
     if embed == True:
         embed = discord.Embed(
-            title="Pal Cutiee Lang :3",
+            title="Paly Cutiee Lyanc :3",
             description=result,
             color=0x1a3d65
         )
