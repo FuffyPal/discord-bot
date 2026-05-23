@@ -203,7 +203,7 @@ async def palc(
 
     if embed == True:
         embed = discord.Embed(
-            title="Paly Cutiee Lyanc :3",
+            title="Palisch Cutiee Lyanc :3",
             description=result,
             color=dark_blue
         )
