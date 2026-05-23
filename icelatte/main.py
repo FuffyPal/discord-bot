@@ -286,11 +286,11 @@ async def random_number(
     )
 
 @bot.slash_command(
-    name="choose_a_word", 
+    name="choose", 
     description="Choose a random word from a given text."
     )
 
-async def choose_a_word(
+async def choose(
     ctx,
     text: str = None,
     embed: bool = True,
