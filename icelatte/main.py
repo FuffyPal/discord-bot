@@ -8,7 +8,7 @@ import logging
 
 token = os.getenv("TOKEN")
 owner=int(os.getenv("OWNER"))
-debug=int(os.getenv("DEBUG"))
+debug=int(os.getenv("DEBUG", 0))
 bot = discord.Bot()
 
 logger = logging.getLogger('discord')
@@ -51,6 +51,16 @@ elif debug == 5:
 else:
     logger.setLevel(logging.NOTSET)
     print("DEBUG is not set!")
+
+debug_modes = {
+    1: ("DEBUG mode", "<:DebugBug1:1507752466152947822>"),
+    2: ("ERROR mode", ":x:"),
+    3: ("INFO mode", "<:dieinfo:1507752914465325066>"),
+    4: ("WARNING mode", "<:warning:1507753301687537755>"),
+    5: ("CRITICAL mode", ":warning:")
+}
+
+mode_name, emoji = debug_modes.get(debug, ("not set", "❓"))
 
 @bot.event
 async def on_ready():
@@ -363,8 +373,14 @@ async def help(
         value="[Click here](https://github.com/FuffyPal)",
         inline=True
     )
-    
+
+    embed.add_field(
+        name="debug",
+        value=f"{mode_name} {emoji}",
+        inline=True
+    )
     await ctx.respond(embed=embed)
+
 
 @bot.user_command(
     name="Say Hello"
