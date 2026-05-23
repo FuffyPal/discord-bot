@@ -283,6 +283,30 @@ async def random_number(
         embed
     )
 
+@bot.slash_command(
+    name="choose_a_word", 
+    description="Choose a random word from a given text."
+    )
+
+async def choose_a_word(
+    ctx,
+    text: str = None,
+    embed: bool = True
+    ):
+    text = text or "no_text_given"
+    await ctx.defer()
+    from src.random import choose_word
+    result = choose_word(text)
+    if embed == True:
+        embed = discord.Embed(
+            title="Choose a word",
+            description=result,
+            color=dark_blue
+        )
+        await ctx.respond(embed=embed)
+    else:
+        await ctx.respond(f"Choose a word: {result}")
+
 @bot.user_command(
     name="Say Hello"
     )
