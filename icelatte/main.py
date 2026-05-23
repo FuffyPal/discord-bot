@@ -16,6 +16,11 @@ handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w'
 handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
 logger.addHandler(handler)
 
+# Colours
+purple=0x74456e
+dark_blue=0x1a3d65
+grey=0x25323d
+
 if debug == 1:
     logger.setLevel(logging.DEBUG)
     logger.debug("debug mode DEBUG!")
@@ -97,7 +102,7 @@ async def say_embed(
     await ctx.respond(embed = discord.Embed(
         title=ctx.author.name+": Says",
         description=nachricht,
-        color=0x74456e
+        color=purple
     ))
 
 @bot.slash_command(
@@ -111,7 +116,7 @@ async def invate(
     embed = discord.Embed(
         title="Invite Mee yeyy",
         description="[Invite Mee!](https://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot)\n[My server!](https://discord.gg/qsQxHk2V8c)",
-        color=0x74456e
+        color=purple
     )
     await ctx.respond(embed=embed)
 
@@ -126,7 +131,7 @@ async def testembed(
     embed = discord.Embed(
         title="Test Embed",
         description="Das ist ein Test Embed.",
-        color=0x74456e
+        color=purple
     )
     await ctx.respond(embed=embed)
 
@@ -144,7 +149,7 @@ async def stop(
         embed = discord.Embed(
             title="Stop",
             description="Bot stopped.",
-            color=0x25323d
+            color=grey
         )
         await ctx.respond(embed=embed)
         exit()
@@ -152,7 +157,7 @@ async def stop(
         embed = discord.Embed(
             title="Access denied",
             description="You're not allowed to use this command!",
-            color=0x25323d
+            color=grey
         )
         await ctx.respond(embed=embed)
 @bot.slash_command(
@@ -174,7 +179,7 @@ async def ping(
     embed = discord.Embed(
         title="Ping",
         description=result,
-        color=0x1a3d65
+        color=dark_blue
     )
     await ctx.respond(embed=embed)
 
@@ -198,12 +203,85 @@ async def palc(
         embed = discord.Embed(
             title="Paly Cutiee Lyanc :3",
             description=result,
-            color=0x1a3d65
+            color=dark_blue
         )
         await ctx.respond(embed=embed)
     else:
         await ctx.respond(result)
 
+async def zar(
+    ctx,
+    lower_bound: int = None,
+    upper_bound: int = None,
+    embed: bool = True,
+    call=None
+    ):
+    await ctx.defer()
+    if call == "zar_":
+        lower_bound = lower_bound or 1
+        upper_bound = upper_bound or 20
+        from src.random import random_num_generator
+        result = random_num_generator(lower_bound, upper_bound)
+        if embed == True:
+            embed = discord.Embed(
+                title="Zar",
+                description=result,
+                color=dark_blue
+            )
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.respond(f"Zar: {result}")
+    else:
+        lower_bound = lower_bound or 1
+        upper_bound = upper_bound or 1000
+        from src.random import random_num_generator
+        result = random_num_generator(lower_bound, upper_bound)
+        if embed == True:
+            embed = discord.Embed(
+                title="Random Number",
+                description=result,
+                color=dark_blue
+            )
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.respond(f"Random Number: {result}")
+
+@bot.slash_command(
+    name="zar", 
+    description="Generate a random number."
+    )
+async def zar_(
+    ctx,
+    lower_bound: int = None,
+    upper_bound: int = None,
+    embed: bool = True
+    ):
+
+    await zar(
+        ctx, 
+        lower_bound, 
+        upper_bound, 
+        embed,
+        call="zar_"
+    )
+
+@bot.slash_command(
+    name="random_number", 
+    description="Generate a random number."
+    )
+
+async def random_number(
+    ctx,
+    lower_bound: int = None,
+    upper_bound: int = None,
+    embed: bool = True
+    ):
+    await zar(
+        ctx, 
+        lower_bound, 
+        upper_bound, 
+        embed
+    )
 
 @bot.user_command(
     name="Say Hello"
