@@ -336,5 +336,40 @@ async def hi(
     ):
 
     await ctx.respond(f"{ctx.author.mention} says hello to {user.name}!")
+
+@bot.slash_command(
+    name="help", 
+    description="Provides information about the bot."
+    )
+async def help(
+    ctx
+    ):
+
+    embed = discord.Embed(
+        title="hello, i'm icelatte :3",
+        description="i'm a cute icelatte that brings fun and various tools to your server! if you want to invite me or join my support server, you can use the links below. also, this is an open-source project!",
+        color=pink
+    )
+    embed.add_field(
+        name="invite icelatte",
+        value="[Click here](https://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot)",
+        inline=False
+    )
+    embed.add_field(
+        name="main server",
+        value="[Click here](https://discord.gg/qsQxHk2V8c)",
+        inline=False
+    )
+    embed.add_field(
+        name="gitlab",
+        value="[Click here](https://gitlab.com/FluffyPal)",
+        inline=True
+    )
+    embed.add_field(
+        name="github",
+        value="[Click here](https://github.com/FuffyPal)",
+        inline=True
+    )
+    await ctx.respond(embed=embed)
     
 bot.run(token)
