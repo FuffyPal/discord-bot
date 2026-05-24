@@ -304,24 +304,11 @@ async def choose(
     ctx,
     text: str = None,
     embed: bool = True,
-    countrys:bool = False
+    countrys: bool = False,
+    names: bool = False
     ):
 
-    if countrys == False:
-        text = text or "no_text_given"
-        await ctx.defer()
-        from src.random import choose_word
-        result = choose_word(text)
-        if embed == True:
-            embed = discord.Embed(
-                title="Choose a word",
-                description=result,
-                color=dark_blue
-            )
-            await ctx.respond(embed=embed)
-        else:
-            await ctx.respond(f"Choose a word: {result}")
-    else:
+    if countrys == True:
         text = text or "afghanistan albania algeria andorra angola antigua_and_barbuda argentina armenia australia austria azerbaijan bahamas bahrain bangladesh barbados belarus belgium belize benin bhutan bolivia bosnia_and_herzegovina botswana brazil brunei bulgaria burkina_faso burundi cabo_verde cambodia cameroon canada central_african_republic chad chile china colombia comoros congo costa_rica croatia cuba cyprus czech_republic denmark djibouti dominica dominican_republic ecuador egypt el_salvador equatorial_guinea eritrea estonia swaziland ethiopia fiji finland france gabon gambia georgia germany ghana greece grenada guatemala guinea guinea_bissau guyana haiti honduras hungary iceland india indonesia iran iraq ireland israel italy ivory_coast jamaica japan jordan kazakhstan kenya kiribati kosovo kuwait kyrgyzstan laos latvia lebanon lesotho liberia libya liechtenstein lithuania luxembourg madagascar malawi malaysia maldives mali malta marshall_islands mauritania mauritius mexico micronesia moldova monaco mongolia montenegro morocco mozambique myanmar namibia nauru nepal netherlands new_zealand nicaragua niger nigeria north_korea south_korea north_macedonia norway oman pakistan palau palestine panama papua_new_guinea paraguay peru philippines poland portugal qatar romania russia rwanda saint_kitts_and_nevis saint_lucia saint_vincent_and_the_grenadines samoa san_marino sao_tome_and_principe saudi_arabia senegal serbia seychelles sierra_leone singapore slovakia slovenia solomon_islands somalia south_africa south_sudan spain sri_lanka sudan suriname sweden switzerland syria taiwan tajikistan tanzania thailand timor_leste togo tonga trinidad_and_tobago tunisia turkey turkmenistan tuvalu uganda ukraine united_arab_emirates united_kingdom united_states uruguay uzbekistan vanuatu vatican_city venezuela vietnam yemen zambia zimbabwe"
         await ctx.defer()
         from src.random import choose_word
@@ -335,6 +322,34 @@ async def choose(
             await ctx.respond(embed=embed)
         else:
             await ctx.respond(f"Choose a country: {result}")
+    elif names == True:
+        text = text or "Okyanus Ali james mary john patricia robert jennifer michael linda william elizabeth david barbara richard susan joseph jessica thomas sarah charles karen christopher nancy daniel lisa matthew betty anthony margaret mark sandra donald ashley steven kimberly paul emily andrew donna joshua michelle kenneth carol kevin amanda brian dorothy george melissa edward deborah ronald stephanie timothy rebecca jason sharon jeffrey kathleen ryan amy jacob shirley gary angela nicholas helen eric anna jonathan brenda stephen pamela larry nicole justin samantha scott katherine brandon christine benjamin debra samuel rachel gregory catherine alexander carolyn frank janet raymond heather jack olivia sophia harper owen evelyn amelia lucas grace chloe oliver ava emma isabella charlotte mia lily logan ethan abigail madison ella carter scarlett jayden layla penelope zoey gabriel hudson leo hazel violet aurora savannah brooklyn"
+        await ctx.defer()
+        from src.random import choose_word
+        result = choose_word(text)
+        if embed == True:
+            embed = discord.Embed(
+                title="Choose a name",
+                description=result,
+                color=dark_blue
+            )
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.respond(f"Choose a name: {result}")
+    else:
+        text = text or "no_text_given"
+        await ctx.defer()
+        from src.random import choose_word
+        result = choose_word(text)
+        if embed == True:
+            embed = discord.Embed(
+                title="Choose a word",
+                description=result,
+                color=dark_blue
+            )
+            await ctx.respond(embed=embed)
+        else:
+            await ctx.respond(f"Choose a word: {result}")
 
 @bot.slash_command(
     name="help", 
