@@ -117,12 +117,14 @@ async def say(
     max_value=14.0,
     required=True
 )
+
 @discord.option(
     name="title",
     description="Enter your title (e.g., Developer, jhonny, student, etc)",
     type=str,
     required=True
 )
+
 async def register(
     ctx, 
     gmt: str = None, 
@@ -145,12 +147,14 @@ async def register(
     name="get_user_info",
     description="Displays profile information about the user."
 )
+
 @discord.option(
     name="user_id",
     description="Enter the user ID (e.g., 123456789)",
     type=str,
     required=True
 )
+
 async def get_user_info(
     ctx,
     user_id: str = None
@@ -224,12 +228,14 @@ async def say_time(
     name="say_embed",
     description="Repeats the message inside an embed."
 )
+
 @discord.option(
     name="nachricht",
     description="Enter the message (e.g., Hello)",
     type=str,
     required=True
 )
+
 async def say_embed(
     ctx, 
     nachricht: str = None
@@ -355,6 +361,7 @@ async def zar(
     embed: bool = True,
     call=None
     ):
+
     await ctx.defer()
     if call == "zar_":
         lower_bound = lower_bound or 1
@@ -389,6 +396,7 @@ async def zar(
     name="zar", 
     description="Generate a random number."
     )
+
 async def zar_(
     ctx,
     lower_bound: int = None,
@@ -415,6 +423,7 @@ async def random_number(
     upper_bound: int = None,
     embed: bool = True
     ):
+
     await zar(
         ctx, 
         lower_bound, 
@@ -449,6 +458,7 @@ async def choose(
             await ctx.respond(embed=embed)
         else:
             await ctx.respond(f"Choose a country: {result}")
+
     elif names == True:
         text = text or "Okyanus Ali james mary john patricia robert jennifer michael linda william elizabeth david barbara richard susan joseph jessica thomas sarah charles karen christopher nancy daniel lisa matthew betty anthony margaret mark sandra donald ashley steven kimberly paul emily andrew donna joshua michelle kenneth carol kevin amanda brian dorothy george melissa edward deborah ronald stephanie timothy rebecca jason sharon jeffrey kathleen ryan amy jacob shirley gary angela nicholas helen eric anna jonathan brenda stephen pamela larry nicole justin samantha scott katherine brandon christine benjamin debra samuel rachel gregory catherine alexander carolyn frank janet raymond heather jack olivia sophia harper owen evelyn amelia lucas grace chloe oliver ava emma isabella charlotte mia lily logan ethan abigail madison ella carter scarlett jayden layla penelope zoey gabriel hudson leo hazel violet aurora savannah brooklyn"
         await ctx.defer()
@@ -463,6 +473,7 @@ async def choose(
             await ctx.respond(embed=embed)
         else:
             await ctx.respond(f"Choose a name: {result}")
+
     else:
         text = text or "no_text_given"
         await ctx.defer()
@@ -475,6 +486,7 @@ async def choose(
                 color=dark_blue
             )
             await ctx.respond(embed=embed)
+
         else:
             await ctx.respond(f"Choose a word: {result}")
 
@@ -482,6 +494,7 @@ async def choose(
     name="help", 
     description="Provides information about the bot."
     )
+
 async def help(
     ctx
     ):
