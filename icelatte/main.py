@@ -12,7 +12,7 @@ from src.storage import init_db
 init_db()
 
 token = os.getenv("TOKEN")
-me=int(os.getenv("OWNER"))
+me=int(966300934202359888)
 debug=int(os.getenv("DEBUG", 0))
 bot = discord.Bot()
 
