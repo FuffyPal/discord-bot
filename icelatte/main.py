@@ -12,7 +12,7 @@ from src.storage import init_db
 init_db()
 
 token = os.getenv("TOKEN")
-owner=int(os.getenv("OWNER"))
+me=int(os.getenv("OWNER"))
 debug=int(os.getenv("DEBUG", 0))
 bot = discord.Bot()
 
@@ -156,7 +156,7 @@ async def get_user_info(
     user_id: str = None
     ):
     user_id_access = ctx.author.id
-    if user_id_access == owner:
+    if user_id_access == me:
         if user_id == None:
             await ctx.respond(f"You need to provide a ID!")
         else:
@@ -284,7 +284,7 @@ async def stop(
     ):
 
     user_id = ctx.author.id
-    if user_id == owner:
+    if user_id == me:
         embed = discord.Embed(
             title="Stop",
             description="Bot stopped.",
