@@ -5,6 +5,11 @@ import discord
 import os
 
 import logging
+import datetime
+
+from src.storage import init_db
+
+init_db()
 
 token = os.getenv("TOKEN")
 owner=int(os.getenv("OWNER"))
@@ -101,10 +106,130 @@ async def say(
         await ctx.respond(f"{ctx.author.name} says: {nachricht}")
 
 @bot.slash_command(
+    name="register",
+    description="Say this to register for Timezone and title."
+)
+@discord.option(
+    name="gmt",
+    description="Enter your GMT offset (e.g., 3 for Turkey, -5 for New York)",
+    type=float,
+    min_value=-12.0,
+    max_value=14.0,
+    required=True
+)
+@discord.option(
+    name="title",
+    description="Enter your title (e.g., Developer, jhonny, student, etc)",
+    type=str,
+    required=True
+)
+async def register(
+    ctx, 
+    gmt: str = None, 
+    title: str = None
+    ):
+
+    if gmt == None:
+        await ctx.respond(f"You need to provide a timezone!")
+    elif title == None:
+        await ctx.respond(f"You need to provide a title!")
+    elif gmt == None and title == None:
+        await ctx.respond(f"You need to provide a timezone and title!")
+    else:
+        from src.storage import save_or_update_user
+        user_id = ctx.author.id
+        save_or_update_user(user_id, gmt, title)
+        await ctx.respond(f"You provided a timezone and title! {user_id}")
+        
+@bot.slash_command(
+    name="get_user_info",
+    description="Displays profile information about the user."
+)
+@discord.option(
+    name="user_id",
+    description="Enter the user ID (e.g., 123456789)",
+    type=str,
+    required=True
+)
+async def get_user_info(
+    ctx,
+    user_id: str = None
+    ):
+    user_id_access = ctx.author.id
+    if user_id_access == owner:
+        if user_id == None:
+            await ctx.respond(f"You need to provide a ID!")
+        else:
+            try:
+                user_id_int = int(user_id)
+            except ValueError:
+                await ctx.respond("Please enter a valid numeric ID!")
+                return
+            from src.storage import get_user
+            result = get_user(user_id_int)
+            if result:
+                await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
+            else:
+                await ctx.respond("User not found!")
+    else:
+        await ctx.respond("You're not allowed to use this command!")
+            
+@bot.slash_command(
+    name="whoami",
+    description="Displays profile information about you."
+)
+
+async def whoami(
+    ctx
+    ):
+    
+    from src.storage import get_user
+    user_id = ctx.author.id
+    result = get_user(user_id)
+    
+    if result:
+        await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
+    else:
+        await ctx.respond("User not found!")
+
+@bot.slash_command(
+    name="say_time",
+    description="Displays the time in GMT."
+)
+
+async def say_time(
+    ctx
+    ):
+    
+    from src.storage import get_user
+    user_id = ctx.author.id
+    result = get_user(user_id)
+
+    if result:
+        time = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=result["gmt"])))
+        await ctx.respond(embed = discord.Embed(
+            title="Time",
+            description=f"{time}",
+            color=pink
+        ))
+    else:
+        await ctx.respond(embed = discord.Embed(
+            title="Error",
+            description="You need to register first! Use /register",
+            color=pink
+        ))
+
+
+@bot.slash_command(
     name="say_embed",
     description="Repeats the message inside an embed."
 )
-
+@discord.option(
+    name="nachricht",
+    description="Enter the message (e.g., Hello)",
+    type=str,
+    required=True
+)
 async def say_embed(
     ctx, 
     nachricht: str = None
@@ -121,6 +246,7 @@ async def say_embed(
     name="invite", 
     description="Invate the bot to your server. and get a invite for my server"
     )
+
 async def invate(
     ctx
     ):
@@ -136,6 +262,7 @@ async def invate(
     name="testembed", 
     description="test embed."
     )
+
 async def testembed(
     ctx
     ):
