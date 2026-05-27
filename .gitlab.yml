@@ -1,0 +1,21 @@
+stages:
+  - build
+
+services:
+  - docker:dind
+
+variables:
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: "/certs"
+
+build-icelatte:
+  stage: build
+  image: docker:24.0.7
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE/icelatte:latest ./icelatte
+    - docker push $CI_REGISTRY_IMAGE/icelatte:latest
+  only:
+    changes:
+      - icelatte/**/*
