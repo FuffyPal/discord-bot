@@ -14,7 +14,7 @@ build-icelatte:
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
-    - docker build -t $CI_REGISTRY_IMAGE/icelatte:latest ./icelatte
+    - docker build -t $CI_REGISTRY_IMAGE/icelatte:latest ./icelatte/Dockerfile
     - docker push $CI_REGISTRY_IMAGE/icelatte:latest
   only:
     changes:
