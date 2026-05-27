@@ -3,5 +3,3 @@ venv
 *.log
 __pycache__
 *.db
-database.db
-discord.log
