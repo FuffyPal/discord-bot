@@ -246,7 +246,7 @@ async def stop(ctx):
     if user_id == me:
         embed = discord.Embed(title="Stop", description="Bot stopped.", color=grey)
         await ctx.respond(embed=embed)
-        await bot.close()
+        os._exit(1)
     else:
         embed = discord.Embed(
             title="Access denied",
