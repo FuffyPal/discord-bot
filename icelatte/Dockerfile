@@ -3,7 +3,7 @@ FROM docker.io/library/python:3.14.4-slim
 WORKDIR /app
 
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends iputils-ping && \
+    apt-get install -y --no-install-recommends iputils-ping curl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt requirements.txt
