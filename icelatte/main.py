@@ -421,7 +421,7 @@ async def help(ctx):
     )
 
     embed.add_field(
-        name="gitlab", value="[Click here](https://gitlab.com/FluffyPal)", inline=True
+        name="gitlab", value="[Click here](https://gitlab.com/FluffyPal)", inline=False
     )
 
     embed.add_field(
