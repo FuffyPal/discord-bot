@@ -16,6 +16,7 @@ token = os.getenv("TOKEN")
 me = int(966300934202359888)
 debug = int(os.getenv("DEBUG", 0))
 bot = discord.Bot()
+version = "0.5.2"
 
 logger = logging.getLogger("discord")
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
@@ -428,6 +429,7 @@ async def help(ctx):
     )
 
     embed.add_field(name="debug", value=f"{mode_name} {emoji}", inline=True)
+    embed.add_field(name="version", value=f"{version}", inline=True)
     await ctx.respond(embed=embed)
 
 
