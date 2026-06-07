@@ -11,4 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+RUN \
+mkdir -p /app/bin/ && \
+curl https://gitlab.com/FluffyPal/vpet_main/-/package_files/308681903/download --output /app/bin/pet
+
 CMD ["python", "main.py"]
