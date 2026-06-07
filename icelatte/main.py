@@ -411,17 +411,17 @@ async def help(ctx):
     embed.add_field(
         name="invite icelatte",
         value="[Click here](https://discord.com/oauth2/authorize?client_id=1505951400281247825&permissions=4503599627373568&integration_type=0&scope=bot)",
-        inline=False,
+        inline=True,
     )
 
     embed.add_field(
         name="main server",
         value="[Click here](https://discord.gg/qsQxHk2V8c)",
-        inline=False,
+        inline=True,
     )
 
     embed.add_field(
-        name="gitlab", value="[Click here](https://gitlab.com/FluffyPal)", inline=False
+        name="gitlab", value="[Click here](https://gitlab.com/FluffyPal)", inline=True
     )
 
     embed.add_field(
