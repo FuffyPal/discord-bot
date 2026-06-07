@@ -416,7 +416,7 @@ async def help(ctx):
 
     embed.add_field(
         name="main server",
-        value="[Click here](https://discord.gg/qsQxHk2V8c)",
+        value="[Click here](https://discord.gg/SayfA5GeSQ)",
         inline=True,
     )
 
