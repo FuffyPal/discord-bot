@@ -23,14 +23,14 @@ def call(command):
         return err_1, err_2
 
 
-def create_pet_command(name=None, status=False, eat=None):
-    command = ["./bin/pet"]
+def create_pet_command(name=None, status=False, eat=None, user_id=123):
+    command = ["./bin/pet", "--savefile", f"./database/{user_id}.json"]
     if name:
         command.extend(["--name", str(name)])
-    if status:
-        command.append("--status")
     if eat and 1 <= eat <= 4:
         command.extend(["--eat", str(eat)])
+    if status:
+        command.append("--status")
     return command
 
 

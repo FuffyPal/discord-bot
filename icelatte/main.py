@@ -7,6 +7,7 @@ import logging
 import os
 
 import discord
+from discord import Option
 
 from src.storage import init_db
 
@@ -431,6 +432,64 @@ async def help(ctx):
     embed.add_field(name="debug", value=f"{mode_name} {emoji}", inline=True)
     embed.add_field(name="version", value=f"{version}", inline=True)
     await ctx.respond(embed=embed)
+
+
+@bot.slash_command(
+    name="pet",
+    description="Interact with your virtual pet, feed it, and check its live status!",
+)
+async def pet(
+    ctx,
+    name: Option(
+        str,
+        description="Write a name to hatch your pet. Do not use this flag again after naming!",
+        default=None,
+        required=False,
+    ),
+    eat: Option(
+        int,
+        description="Choose a delicious food from the market to feed your pet",
+        choices=[
+            discord.OptionChoice(name="Omlet 🍳", value=1),
+            discord.OptionChoice(name="Fish 🐟", value=2),
+            discord.OptionChoice(name="Meat 🥩", value=3),
+            discord.OptionChoice(name="Apple 🍎", value=4),
+        ],
+        default=0,
+        required=False,
+    ),
+    status: Option(
+        bool,
+        description="Show your pet's current health, hunger, and life status",
+        default=False,
+        required=False,
+    ),
+):
+    from src.storage import get_user
+
+    user_id = ctx.author.id
+    result = get_user(user_id)
+
+    if result:
+        from src.pet import call, create_pet_command
+
+        command = create_pet_command(name, status, eat, user_id)
+        result = call(command)
+        await ctx.respond(
+            embed=discord.Embed(
+                title="Virtual Pet Status",
+                description=f"```{result}",
+                color=pink,
+            )
+        )
+    else:
+        await ctx.respond(
+            embed=discord.Embed(
+                title="Error",
+                description="You need to register first! Use /register",
+                color=pink,
+            )
+        )
 
 
 @bot.user_command(name="Say Hello")
