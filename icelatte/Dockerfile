@@ -13,7 +13,7 @@ COPY . .
 
 RUN \
 mkdir -p /app/bin/ && \
-curl https://gitlab.com/FluffyPal/vpet_main/-/package_files/308681903/download --output /app/bin/pet && \
+curl https://gitlab.com/FluffyPal/vpet_main/-/package_files/308689940/download --output /app/bin/pet && \
 chmod +x /app/bin/pet
 
 CMD ["python", "main.py"]
