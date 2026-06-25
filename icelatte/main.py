@@ -11,13 +11,13 @@ from discord import Option
 
 from src.storage import init_db
 
-init_db()
-
 token = os.getenv("TOKEN")
 me = int(966300934202359888)
 debug = int(os.getenv("DEBUG", 0))
+database_name = os.getenv("DB_NAME", "./database/database.db")
 bot = discord.Bot()
-version = "0.5.6"
+version = "0.5.7"
+init_db(database_name)
 
 logger = logging.getLogger("discord")
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
@@ -127,7 +127,7 @@ async def register(ctx, gmt: str = None, title: str = None):
         from src.storage import save_or_update_user
 
         user_id = ctx.author.id
-        save_or_update_user(user_id, gmt, title)
+        save_or_update_user(user_id, gmt, title, database_name)
         await ctx.respond(f"You provided a timezone and title! {user_id}")
 
 
@@ -153,7 +153,7 @@ async def get_user_info(ctx, user_id: str = None):
                 return
             from src.storage import get_user
 
-            result = get_user(user_id_int)
+            result = get_user(user_id_int, database_name)
             if result:
                 await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
             else:
@@ -168,7 +168,7 @@ async def whoami(ctx):
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id)
+    result = get_user(user_id, database_name)
 
     if result:
         await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
@@ -182,7 +182,7 @@ async def say_time(ctx):
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id)
+    result = get_user(user_id, database_name)
 
     if result:
         time = datetime.datetime.now(
@@ -468,7 +468,7 @@ async def pet(
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id)
+    result = get_user(user_id, database_name)
 
     if result:
         from src.pet import call, create_pet_command

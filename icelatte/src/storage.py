@@ -1,11 +1,8 @@
 import sqlite3
 
-DB_NAME = "./database/database.db"
-
-
-def init_db():
+def init_db(database_name):
     """Creates the database and the users table."""
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(database_name)
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -20,9 +17,9 @@ def init_db():
     conn.close()
 
 
-def save_or_update_user(user_id, gmt, title):
+def save_or_update_user(user_id, gmt, title, database_name):
     """Updates the user's information if the user exists, otherwise creates a new record (UPSERT)."""
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(database_name)
     cursor = conn.cursor()
 
     cursor.execute(
@@ -40,9 +37,9 @@ def save_or_update_user(user_id, gmt, title):
     conn.close()
 
 
-def get_user(user_id):
+def get_user(user_id, database_name):
     """Returns the user's information. Returns None if the user does not exist."""
-    conn = sqlite3.connect(DB_NAME)
+    conn = sqlite3.connect(database_name)
     cursor = conn.cursor()
 
     cursor.execute("SELECT gmt, title FROM users WHERE user_id = ?", (user_id,))
