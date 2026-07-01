@@ -9,15 +9,12 @@ import os
 import discord
 from discord import Option
 
-from src.storage import init_db
-
 token = os.getenv("TOKEN")
 me = int(966300934202359888)
 debug = int(os.getenv("DEBUG", 0))
 database_name = os.getenv("DB_NAME", "./database/database.db")
 bot = discord.Bot()
-version = "0.5.8"
-init_db(database_name)
+version = "0.5.9"
 
 logger = logging.getLogger("discord")
 handler = logging.FileHandler(filename="discord.log", encoding="utf-8", mode="w")
@@ -75,6 +72,8 @@ mode_name, emoji = debug_modes.get(debug, ("not set", "❓"))
 
 @bot.event
 async def on_ready():
+    from src.storage import init_db
+    await init_db(database_name)
     print(f"{bot.user} successfully logged in!")
 
 
@@ -127,7 +126,7 @@ async def register(ctx, gmt: str = None, title: str = None):
         from src.storage import save_or_update_user
 
         user_id = ctx.author.id
-        save_or_update_user(user_id, gmt, title, database_name)
+        await save_or_update_user(user_id, gmt, title, database_name)
         await ctx.respond(f"You provided a timezone and title! {user_id}")
 
 
@@ -153,7 +152,7 @@ async def get_user_info(ctx, user_id: str = None):
                 return
             from src.storage import get_user
 
-            result = get_user(user_id_int, database_name)
+            result = await get_user(user_id_int, database_name)
             if result:
                 await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
             else:
@@ -168,7 +167,7 @@ async def whoami(ctx):
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id, database_name)
+    result = await get_user(user_id, database_name)
 
     if result:
         await ctx.respond(f"GMT: {result['gmt']}, Title: {result['title']}")
@@ -182,7 +181,7 @@ async def say_time(ctx):
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id, database_name)
+    result = await get_user(user_id, database_name)
 
     if result:
         time = datetime.datetime.now(
@@ -266,9 +265,9 @@ async def ping(ctx, ip: str = None, count: int = None):
 
     ip = ip or "1.1.1.1"
     count = count or 3
-    from src.ping import ping
+    from src.ping import ping as do_ping
 
-    result = await ping(ip, count)
+    result = await do_ping(ip, count)
     embed = discord.Embed(title="Ping", description=result, color=dark_blue)
     await ctx.respond(embed=embed)
 
@@ -468,13 +467,13 @@ async def pet(
     from src.storage import get_user
 
     user_id = ctx.author.id
-    result = get_user(user_id, database_name)
+    result = await get_user(user_id, database_name)
 
     if result:
         from src.pet import call, create_pet_command
 
         command = create_pet_command(name, status, eat, user_id)
-        result = call(command)
+        result = await call(command)
         await ctx.respond(
             embed=discord.Embed(
                 title="Virtual Pet Status",

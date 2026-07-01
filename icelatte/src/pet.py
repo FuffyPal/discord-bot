@@ -1,26 +1,25 @@
-import subprocess
+import asyncio
 
 
-def call(command):
+async def call(command):
     try:
-        command_result = subprocess.run(
-            command,
-            capture_output=True,
-            text=True,
-            check=True,
+        proc = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
         )
+        stdout, stderr = await proc.communicate()
 
-        result = command_result.stdout
-        return result
+        if proc.returncode != 0:
+            print(f"An error occurred while running the application! Error Code: {proc.returncode}")
+            print(f"Error Details: {stderr.decode('utf-8')}")
+            return f"Error {proc.returncode}: {stderr.decode('utf-8')}"
 
-    except subprocess.CalledProcessError as e:
-        print(
-            f"An error occurred while running the application! Error Code: {e.returncode}"
-        )
-        print(f"Error Details: {e.stderr}")
-        err_1 = {e.returncode}
-        err_2 = {e.stderr}
-        return err_1, err_2
+        return stdout.decode("utf-8")
+
+    except Exception as e:
+        print(f"Exception: {e}")
+        return str(e)
 
 
 def create_pet_command(name=None, status=False, eat=None, user_id=123):
@@ -35,4 +34,5 @@ def create_pet_command(name=None, status=False, eat=None, user_id=123):
 
 
 if __name__ == "__main__":
-    call(command=["./bin/pet", "--status"])
+    import asyncio
+    asyncio.run(call(command=["./bin/pet", "--status"]))
