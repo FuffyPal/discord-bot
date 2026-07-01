@@ -1,7 +1,9 @@
 venv
 .env
+.venv
 *.log
 __pycache__
 *.db
 bin
 database
+.idea

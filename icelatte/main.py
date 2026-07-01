@@ -268,7 +268,7 @@ async def ping(ctx, ip: str = None, count: int = None):
     count = count or 3
     from src.ping import ping
 
-    result = ping(ip, count)
+    result = await ping(ip, count)
     embed = discord.Embed(title="Ping", description=result, color=dark_blue)
     await ctx.respond(embed=embed)
 
