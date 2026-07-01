@@ -16,7 +16,7 @@ me = int(966300934202359888)
 debug = int(os.getenv("DEBUG", 0))
 database_name = os.getenv("DB_NAME", "./database/database.db")
 bot = discord.Bot()
-version = "0.5.7"
+version = "0.5.8"
 init_db(database_name)
 
 logger = logging.getLogger("discord")
